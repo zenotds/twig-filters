@@ -47,6 +47,11 @@ Returns the name of the Filebird folder of the file (requires plugin: FileBird P
 
 Returns true if path exists on the server (to use with static files)
 
+## readable size
+`{{ 'path'|size(2) }}`
+
+Converts bytesize to a readable unit. (par) sets decimal precision
+
 # Functions
 
 ## uniqueid() 
