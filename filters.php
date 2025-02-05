@@ -117,6 +117,23 @@ function extend_twig($twig)
         return file_exists('.' . $file);
     }));
 
+    // Readable Size
+    $twig->addFilter(new \Twig\TwigFilter('size', function ($bytes, $precision = 2) {
+        // The logic from your readableFilesize function
+        if (!is_numeric($bytes) || $bytes < 0) {
+            throw new InvalidArgumentException('The value must be a non-negative number.');
+        }
+    
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+    
+        $bytes /= pow(1024, $pow);
+    
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }));
+
     // Generate uniqueID
     $twig->addFunction(new Twig\TwigFunction('uniqueid', function () {
         return uniqid();
