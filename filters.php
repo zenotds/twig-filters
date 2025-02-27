@@ -22,19 +22,20 @@ function extend_twig($twig)
 
     // import SVG
     $twig->addFilter(new \Twig\TwigFilter('svg', function ($source) {
-        // Convert the URL to a local file path if needed
-        $local_path = str_replace(
-            get_bloginfo('url'),    // This will get the WordPress site's URL
-            ABSPATH,                // The absolute path to the root of the WordPress installation
-            $source
-        );
-
+        // Parse URL to get the path part
+        $parsed_url = parse_url($source);
+        $local_path = ABSPATH . ltrim($parsed_url['path'], '/'); // Remove any leading slashes
+    
+        // Debugging: Output the local path to see if it's correct
+        error_log('SVG Local Path: ' . $local_path);
+    
         // Check if the converted path exists
         if (file_exists($local_path)) {
             // Read and return the SVG contents
             return file_get_contents($local_path);
         } else {
-            // Return an error comment if the file doesn't exist
+            // Log the error and return an error message
+            error_log('SVG file not found: ' . $source);
             return "<!-- SVG file not found: $source -->";
         }
     }));
